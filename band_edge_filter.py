@@ -180,9 +180,10 @@ class BandEdgeFilter:
         tap_indices = range(0, filter_size)
         for i in tap_indices:
             k = (-n + i) / (2.0 * samps_per_sym)
-            angle = 2j * np.pi * (1 + rolloff) * k
-            self.ggp_coeffs_de_rotated[i] = self.ggp_coeffs[i] / np.exp(angle)
+            angle = 2 * np.pi * (1 + rolloff) * k
+            self.ggp_coeffs_de_rotated[filter_size - 1 - i] = self.ggp_coeffs[i] / np.exp(1j * angle)
+
+        phase_offset = np.angle(self.ggp_coeffs_de_rotated[160])
+        center_tap = self.ggp_coeffs_de_rotated[160] / np.exp(1j * phase_offset)
 
         return
-
-
