@@ -1,6 +1,6 @@
-import cmath
+import numpy as np
 
-from numpy import sinc
+
 #  port from GNU Radio fll_band_edge_cc_impl
 
 # /* -*- c++ -*- */
@@ -25,7 +25,7 @@ def design_filter(samps_per_sym: float, rolloff: float, filter_size: int):
     tap_index = range(0, filter_size)
     for i in tap_index:
         k = -m + i * 2.0 / samps_per_sym
-        tap: float = sinc(rolloff * k - 0.5) + sinc(rolloff * k + 0.5)
+        tap: float = np.sinc(rolloff * k - 0.5) + np.sinc(rolloff * k + 0.5)
         power += tap
 
         bb_taps.append(tap)
@@ -40,9 +40,13 @@ def design_filter(samps_per_sym: float, rolloff: float, filter_size: int):
 
         k: float = (-n + i) / (2.0 * samps_per_sym)
 
-        t1: complex = tap * cmath.exp(-1j * 2 * cmath.pi * (1 + rolloff) * k)
-        t2: complex = tap * cmath.exp(1j * 2 * cmath.pi * (1 + rolloff) * k)
+        angle_lower = -2 * np.pi * (1 + rolloff) * k
+        angle_upper = 2 * np.pi * (1 + rolloff) * k
 
+        t1: complex = tap * np.exp(1j * angle_lower)
+        t2: complex = tap * np.exp(1j * angle_upper)
+
+        # flip baseband coefficients
         d_taps_lower[filter_size - i - 1] = t1
         d_taps_upper[filter_size - i - 1] = t2
 
