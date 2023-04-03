@@ -1,4 +1,5 @@
 # This is a sample Python script.
+from band_edge_filter import BandEdgeFilter
 from filter import design_filter
 
 
@@ -14,6 +15,9 @@ def print_hi(name):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # print_hi('PyCharm')
-    design_filter(4, 0.5, 321)
+    design_filter(16, 0.5, 321)
+    band_edge_filter = BandEdgeFilter()
+    band_edge_filter.load_coefficients()
+    band_edge_filter.de_rotate_coefficients()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
