@@ -13,6 +13,8 @@ class BandEdgeFilter:
         self.symbol_times: tuple = None
         self.bb_taps: tuple = None
         self.power = 0
+        self.bb_taps_normalized: tuple = None
+        self.rotation_times: tuple = None
         self.taps_upper = list(range(self.filter_size))
         self.taps_lower = list(range(self.filter_size))
 
@@ -23,11 +25,20 @@ class BandEdgeFilter:
     def compute_tap(self, symbol_time):
         return np.sinc(self.rolloff * symbol_time - 0.5) + np.sinc(self.rolloff * symbol_time + 0.5)
 
+    def compute_rotation_time(self, index):
+        n: int = (len(self.bb_taps) - 1.0) / 2.0
+        return (-n + index) / (2.0 * self.samps_per_sym)
+
+    def normalize(self, tap):
+        return tap / self.power
+
     def design(self):
         tap_index_range = range(0, self.filter_size)
         self.symbol_times = tuple(self.compute_symbol_time(index) for index in tap_index_range)
         self.bb_taps = tuple(self.compute_tap(symbol_time) for symbol_time in self.symbol_times)
         self.power = sum(self.bb_taps)
+        self.bb_taps_normalized = tuple(self.normalize(tap) for tap in self.bb_taps)
+        self.rotation_times = tuple(self.compute_rotation_time(index) for index in tap_index_range)
 
         n: int = (len(self.bb_taps) - 1.0) / 2.0
         for i in tap_index_range:
