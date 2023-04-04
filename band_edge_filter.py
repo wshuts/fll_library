@@ -10,16 +10,24 @@ class BandEdgeFilter:
         self.samps_per_sym = samps_per_sym
         self.filter_size = filter_size
         self.rolloff = rolloff
+        self.symbol_times: tuple = None
         self.bb_taps = []
         self.taps_upper = list(range(self.filter_size))
         self.taps_lower = list(range(self.filter_size))
+
+    def symbol_time_mapping(self, index):
+        m = round(self.filter_size / self.samps_per_sym)
+        return -m + index * 2.0 / self.samps_per_sym
 
     def design(self):
         m = round(self.filter_size / self.samps_per_sym)
         power: float = 0
 
-        tap_index = range(0, self.filter_size)
-        for i in tap_index:
+        tap_index_range = range(0, self.filter_size)
+        k = map(self.symbol_time_mapping, tap_index_range)
+        self.symbol_times = tuple(k)
+
+        for i in tap_index_range:
             k = -m + i * 2.0 / self.samps_per_sym
             tap: float = np.sinc(self.rolloff * k - 0.5) + np.sinc(self.rolloff * k + 0.5)
             power += tap
@@ -27,8 +35,7 @@ class BandEdgeFilter:
             self.bb_taps.append(tap)
 
         n: int = (len(self.bb_taps) - 1.0) / 2.0
-        tap_index = range(0, self.filter_size)
-        for i in tap_index:
+        for i in tap_index_range:
             tap: float = self.bb_taps[i] / power
 
             k: float = (-n + i) / (2.0 * self.samps_per_sym)
