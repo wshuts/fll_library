@@ -20,10 +20,11 @@ class BandEdgeFilter:
 
     def compute_symbol_time(self, index):
         m = round(self.filter_size / self.samps_per_sym)
-        return -m + index * 2.0 / self.samps_per_sym
+        return (-m + index * 2.0 / self.samps_per_sym) * self.alpha
 
-    def compute_tap(self, symbol_time):
-        return np.sinc(self.alpha * symbol_time - 0.5) + np.sinc(self.alpha * symbol_time + 0.5)
+    @staticmethod
+    def compute_tap(symbol_time):
+        return np.sinc(symbol_time - 0.5) + np.sinc(symbol_time + 0.5)
 
     def compute_rotation_time(self, index):
         n: int = (len(self.bb_taps) - 1.0) / 2.0
