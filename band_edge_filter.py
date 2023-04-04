@@ -4,12 +4,12 @@ import numpy as np
 class BandEdgeFilter:
     samps_per_sym: float
     filter_size: int
-    rolloff: float
+    alpha: float
 
-    def __init__(self, samps_per_sym: float, filter_size: int, rolloff: float):
+    def __init__(self, samps_per_sym: float, filter_size: int, alpha: float):
         self.samps_per_sym = samps_per_sym
         self.filter_size = filter_size
-        self.rolloff = rolloff
+        self.alpha = alpha
         self.symbol_times: tuple = None
         self.bb_taps: tuple = None
         self.power = 0
@@ -23,7 +23,7 @@ class BandEdgeFilter:
         return -m + index * 2.0 / self.samps_per_sym
 
     def compute_tap(self, symbol_time):
-        return np.sinc(self.rolloff * symbol_time - 0.5) + np.sinc(self.rolloff * symbol_time + 0.5)
+        return np.sinc(self.alpha * symbol_time - 0.5) + np.sinc(self.alpha * symbol_time + 0.5)
 
     def compute_rotation_time(self, index):
         n: int = (len(self.bb_taps) - 1.0) / 2.0
@@ -46,8 +46,8 @@ class BandEdgeFilter:
 
             k: float = (-n + i) / (2.0 * self.samps_per_sym)
 
-            angle_lower = -2 * np.pi * (1 + self.rolloff) * k
-            angle_upper = 2 * np.pi * (1 + self.rolloff) * k
+            angle_lower = -2 * np.pi * (1 + self.alpha) * k
+            angle_upper = 2 * np.pi * (1 + self.alpha) * k
 
             t1: complex = tap * np.exp(1j * angle_lower)
             t2: complex = tap * np.exp(1j * angle_upper)
