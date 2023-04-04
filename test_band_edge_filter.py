@@ -16,16 +16,28 @@ class TestBandEdgeFilter(unittest.TestCase):
         self.assertEqual(alpha, 0.5)
 
     def test_symbol_times(self):
-        band_edge_filter = BandEdgeFilter(16.0, 321, 0.5)
+        samps_per_sym = 16.0
+        filter_size = 321
+        alpha = 0.5
+
+        leftmost_index = 0
+        center_index = round(0.5 * (filter_size - 1))
+        rightmost_index = filter_size - 1
+
+        band_edge_filter = BandEdgeFilter(samps_per_sym, filter_size, alpha)
         band_edge_filter.design()
 
-        newest = band_edge_filter.symbol_times[0]
-        now = band_edge_filter.symbol_times[160]
-        oldest = band_edge_filter.symbol_times[320]
+        leftmost_actual = band_edge_filter.symbol_times[leftmost_index]
+        center_actual = band_edge_filter.symbol_times[center_index]
+        rightmost_actual = band_edge_filter.symbol_times[rightmost_index]
 
-        self.assertEqual(newest, -20.0)
-        self.assertEqual(now, 0.0)
-        self.assertEqual(oldest, 20.0)
+        leftmost_expected = -1 * alpha * (filter_size - 1) / samps_per_sym
+        center_expected = 0.0
+        rightmost_expected = 1 * alpha * (filter_size - 1) / samps_per_sym
+
+        self.assertEqual(leftmost_expected, leftmost_actual)
+        self.assertEqual(center_expected, center_actual)
+        self.assertEqual(rightmost_expected, rightmost_actual)
 
     def test_bb_taps(self):
         band_edge_filter = BandEdgeFilter(16.0, 321, 0.5)
