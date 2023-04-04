@@ -1,6 +1,4 @@
 # This is a sample Python script.
-from band_edge_filter_verifier import BandEdgeFilterVerifier
-from filter import design_filter
 
 
 # Press Shift+F10 to execute it or replace it with your code.
@@ -14,10 +12,7 @@ def print_hi(name):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    # print_hi('PyCharm')
-    design_filter(16, 0.5, 321)
-    band_edge_filter = BandEdgeFilterVerifier()
-    band_edge_filter.load_coefficients()
-    band_edge_filter.de_rotate_coefficients()
+    print_hi('PyCharm')
+
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
