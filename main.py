@@ -1,5 +1,5 @@
 # This is a sample Python script.
-from band_edge_filter import BandEdgeFilter
+from band_edge_filter_verifier import BandEdgeFilterVerifier
 from filter import design_filter
 
 
@@ -16,7 +16,7 @@ def print_hi(name):
 if __name__ == '__main__':
     # print_hi('PyCharm')
     design_filter(16, 0.5, 321)
-    band_edge_filter = BandEdgeFilter()
+    band_edge_filter = BandEdgeFilterVerifier()
     band_edge_filter.load_coefficients()
     band_edge_filter.de_rotate_coefficients()
 

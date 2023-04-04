@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class BandEdgeFilter:
+class BandEdgeFilterVerifier:
     def __init__(self):
         self.ggp_coeffs = None
         self.ggp_coeffs_de_rotated = None
