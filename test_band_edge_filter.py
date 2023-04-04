@@ -27,6 +27,20 @@ class TestBandEdgeFilter(unittest.TestCase):
         self.assertEqual(now, 0.0)
         self.assertEqual(oldest, 20.0)
 
+    def test_bb_taps(self):
+        band_edge_filter = BandEdgeFilter(16.0, 321, 0.5)
+        band_edge_filter.design()
+
+        zero_left = band_edge_filter.bb_taps[160 - 8 - 16]
+        peak_left = band_edge_filter.bb_taps[160 - 8]
+        peak_right = band_edge_filter.bb_taps[160 + 8]
+        zero_right = band_edge_filter.bb_taps[160 + 8 + 16]
+
+        self.assertEqual(zero_left, 0.0)
+        self.assertEqual(peak_left, 1.0)
+        self.assertEqual(peak_right, 1.0)
+        self.assertEqual(zero_right, 0.0)
+
 
 if __name__ == '__main__':
     unittest.main()
