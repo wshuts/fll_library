@@ -5,15 +5,23 @@ from band_edge_filter import BandEdgeFilter
 class TestBandEdgeFilter(unittest.TestCase):
 
     def test_constructor(self):
-        band_edge_filter = BandEdgeFilter(16.0, 321, 0.5)
+        samps_per_sym = 16.0
+        filter_size = 321
+        alpha = 0.5
 
-        samps_per_sym = band_edge_filter.samps_per_sym
-        filter_size = band_edge_filter.filter_size
-        alpha = band_edge_filter.alpha
+        band_edge_filter = BandEdgeFilter(samps_per_sym, filter_size, alpha)
 
-        self.assertEqual(samps_per_sym, 16.0)
-        self.assertEqual(filter_size, 321)
-        self.assertEqual(alpha, 0.5)
+        samps_per_sym_actual = band_edge_filter.samps_per_sym
+        filter_size_actual = band_edge_filter.filter_size
+        alpha_actual = band_edge_filter.alpha
+
+        samps_per_sym_expected = samps_per_sym
+        filter_size_expected = filter_size
+        alpha_expected = alpha
+
+        self.assertEqual(samps_per_sym_expected, samps_per_sym_actual)
+        self.assertEqual(filter_size_expected, filter_size_actual)
+        self.assertEqual(alpha_expected, alpha_actual)
 
     def test_symbol_times(self):
         samps_per_sym = 16.0
