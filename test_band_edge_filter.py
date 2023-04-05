@@ -67,6 +67,27 @@ class TestBandEdgeFilter(unittest.TestCase):
 
         self.assertAlmostEqual(32.0, power, 2)
 
+    def test_bb_taps_normalized(self):
+        half_samps_per_sym = round(0.5 * self.samps_per_sym)
+        samps_per_sym = round(self.samps_per_sym)
+
+        zero_left_index = self.center_index - half_samps_per_sym - samps_per_sym
+        peak_left_index = self.center_index - half_samps_per_sym
+        peak_right_index = self.center_index + half_samps_per_sym
+        zero_right_index = self.center_index + half_samps_per_sym + samps_per_sym
+
+        zero_left = self.band_edge_filter.bb_taps_normalized[zero_left_index]
+        peak_left = self.band_edge_filter.bb_taps_normalized[peak_left_index]
+        peak_right = self.band_edge_filter.bb_taps_normalized[peak_right_index]
+        zero_right = self.band_edge_filter.bb_taps_normalized[zero_right_index]
+
+        normalized_peak = 1.0 / self.band_edge_filter.power
+
+        self.assertEqual(0.0, zero_left)
+        self.assertEqual(normalized_peak, peak_left)
+        self.assertEqual(normalized_peak, peak_right)
+        self.assertEqual(0.0, zero_right)
+
     def tearDown(self) -> None:
         self.band_edge_filter.dispose()
         return
