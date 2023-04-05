@@ -55,3 +55,7 @@ class BandEdgeFilter:
 
             self.taps_lower[self.filter_size - i - 1] = t1
             self.taps_upper[self.filter_size - i - 1] = t2
+
+    def dispose(self):
+        return
+
