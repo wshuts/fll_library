@@ -8,6 +8,10 @@ class TestBandEdgeFilter(unittest.TestCase):
         self.filter_size = 321
         self.alpha = 0.5
 
+        self.leftmost_index = 0
+        self.center_index = round(0.5 * (self.filter_size - 1))
+        self.rightmost_index = self.filter_size - 1
+
         self.band_edge_filter = BandEdgeFilter(self.samps_per_sym, self.filter_size, self.alpha)
         self.band_edge_filter.design()
 
@@ -27,13 +31,9 @@ class TestBandEdgeFilter(unittest.TestCase):
         self.assertEqual(alpha_expected, alpha_actual)
 
     def test_symbol_times(self):
-        leftmost_index = 0
-        center_index = round(0.5 * (self.filter_size - 1))
-        rightmost_index = self.filter_size - 1
-
-        leftmost_actual = self.band_edge_filter.symbol_times[leftmost_index]
-        center_actual = self.band_edge_filter.symbol_times[center_index]
-        rightmost_actual = self.band_edge_filter.symbol_times[rightmost_index]
+        leftmost_actual = self.band_edge_filter.symbol_times[self.leftmost_index]
+        center_actual = self.band_edge_filter.symbol_times[self.center_index]
+        rightmost_actual = self.band_edge_filter.symbol_times[self.rightmost_index]
 
         leftmost_expected = -1 * self.alpha * (self.filter_size - 1) / self.samps_per_sym
         center_expected = 0.0
@@ -44,13 +44,18 @@ class TestBandEdgeFilter(unittest.TestCase):
         self.assertEqual(rightmost_expected, rightmost_actual)
 
     def test_bb_taps(self):
-        band_edge_filter = BandEdgeFilter(16.0, 321, 0.5)
-        band_edge_filter.design()
+        half_samps_per_sym = round(0.5 * self.samps_per_sym)
+        samps_per_sym = round(self.samps_per_sym)
 
-        zero_left = band_edge_filter.bb_taps[160 - 8 - 16]
-        peak_left = band_edge_filter.bb_taps[160 - 8]
-        peak_right = band_edge_filter.bb_taps[160 + 8]
-        zero_right = band_edge_filter.bb_taps[160 + 8 + 16]
+        zero_left_index = self.center_index - half_samps_per_sym - samps_per_sym
+        peak_left_index = self.center_index - half_samps_per_sym
+        peak_right_index = self.center_index + half_samps_per_sym
+        zero_right_index = self.center_index + half_samps_per_sym + samps_per_sym
+
+        zero_left = self.band_edge_filter.bb_taps[zero_left_index]
+        peak_left = self.band_edge_filter.bb_taps[peak_left_index]
+        peak_right = self.band_edge_filter.bb_taps[peak_right_index]
+        zero_right = self.band_edge_filter.bb_taps[zero_right_index]
 
         self.assertEqual(0.0, zero_left)
         self.assertEqual(1.0, peak_left)
