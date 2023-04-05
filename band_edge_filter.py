@@ -18,8 +18,12 @@ class BandEdgeFilter:
         self.rotation_times: tuple = None
         self.angles_lower: tuple = None
         self.angles_upper: tuple = None
-        self.taps_upper = list(range(self.filter_size))
-        self.taps_lower = list(range(self.filter_size))
+        self.tap_angle_pairs_lower: tuple = None
+        self.tap_angle_pairs_upper: tuple = None
+        self.taps_lower_flipped: tuple = None
+        self.taps_upper_flipped: tuple = None
+        self.taps_lower: tuple = None
+        self.taps_upper: tuple = None
 
     def compute_sampling_time(self, index):
         return 2.0 * self.alpha / self.samps_per_sym * (index - self.half_filter_size)
@@ -42,21 +46,38 @@ class BandEdgeFilter:
     def compute_angle_upper(rotation_time):
         return 2 * np.pi * rotation_time
 
+    @staticmethod
+    def compute_rotated_tap(tap, angle):
+        return tap * np.exp(1j * angle)
+
     def design(self):
         tap_index_range = range(0, self.filter_size)
         self.sampling_times = tuple(self.compute_sampling_time(index) for index in tap_index_range)
         self.bb_taps = tuple(self.compute_tap(sample_time) for sample_time in self.sampling_times)
         self.power = sum(self.bb_taps)
         self.bb_taps_normalized = tuple(self.normalize(tap) for tap in self.bb_taps)
+
         self.rotation_times = tuple(self.compute_rotation_time(index) for index in tap_index_range)
         self.angles_lower = tuple(self.compute_angle_lower(rotation_time) for rotation_time in self.rotation_times)
         self.angles_upper = tuple(self.compute_angle_upper(rotation_time) for rotation_time in self.rotation_times)
 
-        # t1: complex = tap * np.exp(1j * angle_lower)
-        # t2: complex = tap * np.exp(1j * angle_upper)
-        #
-        # self.taps_lower[self.filter_size - i - 1] = t1
-        # self.taps_upper[self.filter_size - i - 1] = t2
+        self.tap_angle_pairs_lower = zip(self.bb_taps_normalized, self.angles_lower)
+        self.taps_lower_flipped = tuple(self.compute_rotated_tap(tap, angle)
+                                        for (tap, angle) in self.tap_angle_pairs_lower)
+        self.taps_lower = reversed(self.taps_lower_flipped)
+
+        self.tap_angle_pairs_upper = zip(self.bb_taps_normalized, self.angles_upper)
+        self.taps_upper_flipped = tuple(self.compute_rotated_tap(tap, angle)
+                                        for (tap, angle) in self.tap_angle_pairs_upper)
+        self.taps_upper = reversed(self.taps_upper_flipped)
 
     def dispose(self):
         return
+
+    def print(self):
+        print('Lower Band Edge Filter Taps:')
+        print(list(self.taps_lower))
+        print('\n')
+        print('Upper Band Edge Filter Taps:')
+        print(list(self.taps_upper))
+        print('\n')
