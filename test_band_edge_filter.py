@@ -17,6 +17,7 @@ class TestBandEdgeFilter(unittest.TestCase):
 
         self.band_edge_filter = BandEdgeFilter(self.samps_per_sym, self.filter_size, self.alpha)
         self.band_edge_filter.design()
+        self.band_edge_filter.print()
 
         return
 
