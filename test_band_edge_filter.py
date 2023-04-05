@@ -52,10 +52,10 @@ class TestBandEdgeFilter(unittest.TestCase):
         peak_right = band_edge_filter.bb_taps[160 + 8]
         zero_right = band_edge_filter.bb_taps[160 + 8 + 16]
 
-        self.assertEqual(zero_left, 0.0)
-        self.assertEqual(peak_left, 1.0)
-        self.assertEqual(peak_right, 1.0)
-        self.assertEqual(zero_right, 0.0)
+        self.assertEqual(0.0, zero_left)
+        self.assertEqual(1.0, peak_left)
+        self.assertEqual(1.0, peak_right)
+        self.assertEqual(0.0, zero_right)
 
     def test_power(self):
         band_edge_filter = BandEdgeFilter(16.0, 321, 0.5)
@@ -63,7 +63,7 @@ class TestBandEdgeFilter(unittest.TestCase):
 
         power = band_edge_filter.power
 
-        self.assertAlmostEqual(power, 32.0, 2)
+        self.assertAlmostEqual(32.0, power, 2)
 
     def tearDown(self) -> None:
         self.band_edge_filter.dispose()
