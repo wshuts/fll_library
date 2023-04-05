@@ -1,4 +1,7 @@
 import unittest
+
+import numpy as np
+
 from band_edge_filter import BandEdgeFilter
 
 
@@ -30,10 +33,10 @@ class TestBandEdgeFilter(unittest.TestCase):
         self.assertEqual(filter_size_expected, filter_size_actual)
         self.assertEqual(alpha_expected, alpha_actual)
 
-    def test_symbol_times(self):
-        leftmost_actual = self.band_edge_filter.symbol_times[self.leftmost_index]
-        center_actual = self.band_edge_filter.symbol_times[self.center_index]
-        rightmost_actual = self.band_edge_filter.symbol_times[self.rightmost_index]
+    def test_sampling_times(self):
+        leftmost_actual = self.band_edge_filter.sampling_times[self.leftmost_index]
+        center_actual = self.band_edge_filter.sampling_times[self.center_index]
+        rightmost_actual = self.band_edge_filter.sampling_times[self.rightmost_index]
 
         leftmost_expected = -1 * self.alpha * (self.filter_size - 1) / self.samps_per_sym
         center_expected = 0.0
@@ -100,6 +103,36 @@ class TestBandEdgeFilter(unittest.TestCase):
         self.assertEqual(leftmost_expected, leftmost_actual)
         self.assertEqual(center_expected, center_actual)
         self.assertEqual(rightmost_expected, rightmost_actual)
+
+    def test_angles_lower(self):
+        samps_per_sym = round(self.samps_per_sym)
+
+        left_index = self.center_index - 2 * samps_per_sym
+        symbol_index = self.center_index
+        right_index = self.center_index + 2 * samps_per_sym
+
+        left_rotation = self.band_edge_filter.angles_lower[left_index]
+        zero_rotation = self.band_edge_filter.angles_lower[symbol_index]
+        right_rotation = self.band_edge_filter.angles_lower[right_index]
+
+        self.assertEqual(3 * np.pi, left_rotation)
+        self.assertEqual(0.0, zero_rotation)
+        self.assertEqual(-3 * np.pi, right_rotation)
+
+    def test_angles_upper(self):
+        samps_per_sym = round(self.samps_per_sym)
+
+        left_index = self.center_index - 2 * samps_per_sym
+        symbol_index = self.center_index
+        right_index = self.center_index + 2 * samps_per_sym
+
+        left_rotation = self.band_edge_filter.angles_upper[left_index]
+        zero_rotation = self.band_edge_filter.angles_upper[symbol_index]
+        right_rotation = self.band_edge_filter.angles_upper[right_index]
+
+        self.assertEqual(-3 * np.pi, left_rotation)
+        self.assertEqual(0.0, zero_rotation)
+        self.assertEqual(3 * np.pi, right_rotation)
 
     def tearDown(self) -> None:
         self.band_edge_filter.dispose()
