@@ -60,4 +60,3 @@ class BandEdgeFilter:
 
     def dispose(self):
         return
-
