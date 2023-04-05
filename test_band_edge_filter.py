@@ -63,10 +63,7 @@ class TestBandEdgeFilter(unittest.TestCase):
         self.assertEqual(0.0, zero_right)
 
     def test_power(self):
-        band_edge_filter = BandEdgeFilter(16.0, 321, 0.5)
-        band_edge_filter.design()
-
-        power = band_edge_filter.power
+        power = self.band_edge_filter.power
 
         self.assertAlmostEqual(32.0, power, 2)
 
