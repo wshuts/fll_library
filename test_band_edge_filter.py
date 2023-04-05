@@ -3,45 +3,41 @@ from band_edge_filter import BandEdgeFilter
 
 
 class TestBandEdgeFilter(unittest.TestCase):
+    def setUp(self) -> None:
+        self.samps_per_sym = 16.0
+        self.filter_size = 321
+        self.alpha = 0.5
+
+        self.band_edge_filter = BandEdgeFilter(self.samps_per_sym, self.filter_size, self.alpha)
+        self.band_edge_filter.design()
+
+        return
 
     def test_constructor(self):
-        samps_per_sym = 16.0
-        filter_size = 321
-        alpha = 0.5
+        samps_per_sym_actual = self.band_edge_filter.samps_per_sym
+        filter_size_actual = self.band_edge_filter.filter_size
+        alpha_actual = self.band_edge_filter.alpha
 
-        band_edge_filter = BandEdgeFilter(samps_per_sym, filter_size, alpha)
-
-        samps_per_sym_actual = band_edge_filter.samps_per_sym
-        filter_size_actual = band_edge_filter.filter_size
-        alpha_actual = band_edge_filter.alpha
-
-        samps_per_sym_expected = samps_per_sym
-        filter_size_expected = filter_size
-        alpha_expected = alpha
+        samps_per_sym_expected = self.samps_per_sym
+        filter_size_expected = self.filter_size
+        alpha_expected = self.alpha
 
         self.assertEqual(samps_per_sym_expected, samps_per_sym_actual)
         self.assertEqual(filter_size_expected, filter_size_actual)
         self.assertEqual(alpha_expected, alpha_actual)
 
     def test_symbol_times(self):
-        samps_per_sym = 16.0
-        filter_size = 321
-        alpha = 0.5
-
         leftmost_index = 0
-        center_index = round(0.5 * (filter_size - 1))
-        rightmost_index = filter_size - 1
+        center_index = round(0.5 * (self.filter_size - 1))
+        rightmost_index = self.filter_size - 1
 
-        band_edge_filter = BandEdgeFilter(samps_per_sym, filter_size, alpha)
-        band_edge_filter.design()
+        leftmost_actual = self.band_edge_filter.symbol_times[leftmost_index]
+        center_actual = self.band_edge_filter.symbol_times[center_index]
+        rightmost_actual = self.band_edge_filter.symbol_times[rightmost_index]
 
-        leftmost_actual = band_edge_filter.symbol_times[leftmost_index]
-        center_actual = band_edge_filter.symbol_times[center_index]
-        rightmost_actual = band_edge_filter.symbol_times[rightmost_index]
-
-        leftmost_expected = -1 * alpha * (filter_size - 1) / samps_per_sym
+        leftmost_expected = -1 * self.alpha * (self.filter_size - 1) / self.samps_per_sym
         center_expected = 0.0
-        rightmost_expected = 1 * alpha * (filter_size - 1) / samps_per_sym
+        rightmost_expected = 1 * self.alpha * (self.filter_size - 1) / self.samps_per_sym
 
         self.assertEqual(leftmost_expected, leftmost_actual)
         self.assertEqual(center_expected, center_actual)
@@ -68,6 +64,10 @@ class TestBandEdgeFilter(unittest.TestCase):
         power = band_edge_filter.power
 
         self.assertAlmostEqual(power, 32.0, 2)
+
+    def tearDown(self) -> None:
+        self.band_edge_filter.dispose()
+        return
 
 
 if __name__ == '__main__':
