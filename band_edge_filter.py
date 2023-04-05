@@ -27,8 +27,8 @@ class BandEdgeFilter:
         return np.sinc(symbol_time - 0.5) + np.sinc(symbol_time + 0.5)
 
     def compute_rotation_time(self, index):
-        n: int = (len(self.bb_taps) - 1.0) / 2.0
-        return (-n + index) / (2.0 * self.samps_per_sym)
+        n = round(0.5 * (self.filter_size - 1))
+        return 0.5 * (1 + self.alpha) / self.samps_per_sym * (index - n)
 
     def normalize(self, tap):
         return tap / self.power
@@ -45,10 +45,10 @@ class BandEdgeFilter:
         for i in tap_index_range:
             tap: float = self.bb_taps[i] / self.power
 
-            k: float = (-n + i) / (2.0 * self.samps_per_sym)
+            k: float = (-n + i) * (1 + self.alpha) / (2.0 * self.samps_per_sym)
 
-            angle_lower = -2 * np.pi * (1 + self.alpha) * k
-            angle_upper = 2 * np.pi * (1 + self.alpha) * k
+            angle_lower = -2 * np.pi * k
+            angle_upper = 2 * np.pi * k
 
             t1: complex = tap * np.exp(1j * angle_lower)
             t2: complex = tap * np.exp(1j * angle_upper)
