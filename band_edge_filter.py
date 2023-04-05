@@ -20,8 +20,8 @@ class BandEdgeFilter:
         self.angles_upper: tuple = None
         self.tap_angle_pairs_lower: tuple = None
         self.tap_angle_pairs_upper: tuple = None
-        self.taps_lower_flipped: tuple = None
-        self.taps_upper_flipped: tuple = None
+        self.taps_lower_reversed: tuple = None
+        self.taps_upper_reversed: tuple = None
         self.taps_lower: tuple = None
         self.taps_upper: tuple = None
 
@@ -62,14 +62,15 @@ class BandEdgeFilter:
         self.angles_upper = tuple(self.compute_angle_upper(rotation_time) for rotation_time in self.rotation_times)
 
         self.tap_angle_pairs_lower = zip(self.bb_taps_normalized, self.angles_lower)
-        self.taps_lower_flipped = tuple(self.compute_rotated_tap(tap, angle)
-                                        for (tap, angle) in self.tap_angle_pairs_lower)
-        self.taps_lower = reversed(self.taps_lower_flipped)
+        self.taps_lower = tuple(self.compute_rotated_tap(tap, angle)
+                                for (tap, angle) in self.tap_angle_pairs_lower)
+        self.taps_lower_reversed = reversed(self.taps_lower)
 
         self.tap_angle_pairs_upper = zip(self.bb_taps_normalized, self.angles_upper)
-        self.taps_upper_flipped = tuple(self.compute_rotated_tap(tap, angle)
-                                        for (tap, angle) in self.tap_angle_pairs_upper)
-        self.taps_upper = reversed(self.taps_upper_flipped)
+        self.taps_upper = tuple(self.compute_rotated_tap(tap, angle)
+                                for (tap, angle) in self.tap_angle_pairs_upper)
+        self.taps_upper_reversed = reversed(self.taps_upper)
+        return
 
     def dispose(self):
         return
