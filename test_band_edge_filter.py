@@ -88,6 +88,19 @@ class TestBandEdgeFilter(unittest.TestCase):
         self.assertEqual(normalized_peak, peak_right)
         self.assertEqual(0.0, zero_right)
 
+    def test_rotation_times(self):
+        leftmost_actual = self.band_edge_filter.rotation_times[self.leftmost_index]
+        center_actual = self.band_edge_filter.rotation_times[self.center_index]
+        rightmost_actual = self.band_edge_filter.rotation_times[self.rightmost_index]
+
+        leftmost_expected = -0.5 * (1 + self.alpha) / self.samps_per_sym * self.center_index
+        center_expected = 0.0
+        rightmost_expected = 0.5 * (1 + self.alpha) / self.samps_per_sym * self.center_index
+
+        self.assertEqual(leftmost_expected, leftmost_actual)
+        self.assertEqual(center_expected, center_actual)
+        self.assertEqual(rightmost_expected, rightmost_actual)
+
     def tearDown(self) -> None:
         self.band_edge_filter.dispose()
         return
