@@ -61,12 +61,12 @@ class BandEdgeFilter:
         self.angles_lower = tuple(self.compute_angle_lower(rotation_time) for rotation_time in self.rotation_times)
         self.angles_upper = tuple(self.compute_angle_upper(rotation_time) for rotation_time in self.rotation_times)
 
-        self.tap_angle_pairs_lower = zip(self.bb_taps_normalized, self.angles_lower)
+        self.tap_angle_pairs_lower = tuple(zip(self.bb_taps_normalized, self.angles_lower))
         self.taps_lower = tuple(self.compute_rotated_tap(tap, angle)
                                 for (tap, angle) in self.tap_angle_pairs_lower)
         self.taps_lower_reversed = reversed(self.taps_lower)
 
-        self.tap_angle_pairs_upper = zip(self.bb_taps_normalized, self.angles_upper)
+        self.tap_angle_pairs_upper = tuple(zip(self.bb_taps_normalized, self.angles_upper))
         self.taps_upper = tuple(self.compute_rotated_tap(tap, angle)
                                 for (tap, angle) in self.tap_angle_pairs_upper)
         self.taps_upper_reversed = reversed(self.taps_upper)
