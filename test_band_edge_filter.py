@@ -149,7 +149,29 @@ class TestBandEdgeFilter(unittest.TestCase):
         right_tap_expected = self.band_edge_filter.bb_taps_normalized[right_index]
         left_angle_expected = self.band_edge_filter.angles_lower[left_index]
         symbol_angle_expected = self.band_edge_filter.angles_lower[symbol_index]
-        right_angle_expected= self.band_edge_filter.angles_lower[right_index]
+        right_angle_expected = self.band_edge_filter.angles_lower[right_index]
+
+        self.assertEqual((left_tap_expected, left_angle_expected), (left_tap_actual, left_angle_actual))
+        self.assertEqual((symbol_tap_expected, symbol_angle_expected), (symbol_tap_actual, symbol_angle_actual))
+        self.assertEqual((right_tap_expected, right_angle_expected), (right_tap_actual, right_angle_actual))
+
+    def test_tap_angle_pairs_upper(self):
+        samps_per_sym = round(self.samps_per_sym)
+
+        left_index = self.center_index - 2 * samps_per_sym
+        symbol_index = self.center_index
+        right_index = self.center_index + 2 * samps_per_sym
+
+        (left_tap_actual, left_angle_actual) = self.band_edge_filter.tap_angle_pairs_upper[left_index]
+        (symbol_tap_actual, symbol_angle_actual) = self.band_edge_filter.tap_angle_pairs_upper[symbol_index]
+        (right_tap_actual, right_angle_actual) = self.band_edge_filter.tap_angle_pairs_upper[right_index]
+
+        left_tap_expected = self.band_edge_filter.bb_taps_normalized[left_index]
+        symbol_tap_expected = self.band_edge_filter.bb_taps_normalized[symbol_index]
+        right_tap_expected = self.band_edge_filter.bb_taps_normalized[right_index]
+        left_angle_expected = self.band_edge_filter.angles_upper[left_index]
+        symbol_angle_expected = self.band_edge_filter.angles_upper[symbol_index]
+        right_angle_expected = self.band_edge_filter.angles_upper[right_index]
 
         self.assertEqual((left_tap_expected, left_angle_expected), (left_tap_actual, left_angle_actual))
         self.assertEqual((symbol_tap_expected, symbol_angle_expected), (symbol_tap_actual, symbol_angle_actual))
