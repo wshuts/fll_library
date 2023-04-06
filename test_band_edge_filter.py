@@ -177,6 +177,29 @@ class TestBandEdgeFilter(unittest.TestCase):
         self.assertEqual((symbol_tap_expected, symbol_angle_expected), (symbol_tap_actual, symbol_angle_actual))
         self.assertEqual((right_tap_expected, right_angle_expected), (right_tap_actual, right_angle_actual))
 
+    def test_taps_lower(self):
+        half_samps_per_sym = round(0.5 * self.samps_per_sym)
+        samps_per_sym = round(self.samps_per_sym)
+
+        zero_left_index = self.center_index - half_samps_per_sym - samps_per_sym
+        peak_left_index = self.center_index - half_samps_per_sym
+        peak_right_index = self.center_index + half_samps_per_sym
+        zero_right_index = self.center_index + half_samps_per_sym + samps_per_sym
+
+        zero_left = self.band_edge_filter.taps_lower[zero_left_index]
+        peak_left = self.band_edge_filter.taps_lower[peak_left_index]
+        peak_right = self.band_edge_filter.taps_lower[peak_right_index]
+        zero_right = self.band_edge_filter.taps_lower[zero_right_index]
+
+        normalized_peak = 1.0 / self.band_edge_filter.power
+        rotated_peak_left = normalized_peak * np.exp(1j * self.band_edge_filter.angles_lower[peak_left_index])
+        rotated_peak_right = normalized_peak * np.exp(1j * self.band_edge_filter.angles_lower[peak_right_index])
+
+        self.assertEqual(0.0, zero_left)
+        self.assertEqual(rotated_peak_left, peak_left)
+        self.assertEqual(rotated_peak_right, peak_right)
+        self.assertEqual(0.0, zero_right)
+
     def tearDown(self) -> None:
         self.band_edge_filter.dispose()
         return
