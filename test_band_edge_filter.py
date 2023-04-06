@@ -223,6 +223,18 @@ class TestBandEdgeFilter(unittest.TestCase):
         self.assertEqual(rotated_peak_right, peak_right)
         self.assertEqual(0.0, zero_right)
 
+    def test_taps_lower_reversed(self):
+        self.assertEqual(
+            self.band_edge_filter.taps_lower[self.leftmost_index],
+            self.band_edge_filter.taps_lower_reversed[self.rightmost_index]
+        )
+
+    def test_taps_upper_reversed(self):
+        self.assertEqual(
+            self.band_edge_filter.taps_upper[self.leftmost_index],
+            self.band_edge_filter.taps_upper_reversed[self.rightmost_index]
+        )
+
     def tearDown(self) -> None:
         self.band_edge_filter.dispose()
         return
